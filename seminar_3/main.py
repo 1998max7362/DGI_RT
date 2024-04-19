@@ -42,8 +42,12 @@ class Audio_Item():
         # спектр мощности сигнала
         self.spectre_data = abs(np.fft.fft(music_amps))**2
         self.freqs_scale = np.fft.fftfreq(self.time_scale.size, 1/self.sampl_rate)
+    
+    def __str__(self) -> str:
+        return str(self.__dict__)
 
 my_audio = Audio_Item("seminar_3/1kHz_44100Hz_16bit_05sec.wav")
+
 
 plt.plot(my_audio.time_scale,my_audio.osc_data)
 plt.show()
