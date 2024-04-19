@@ -1,51 +1,54 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import copy
+from math import ceil
 
-fileobj =  open("seminar_3/1kHz_44100Hz_16bit_05sec.wav" , mode="rb")
+class Audio_Item():
+    def __init__(self,filename:str) -> None:
+        fileobj =  open(filename , mode="rb")
+        filedata = fileobj.read()
+        fileobj.close()
 
-data = fileobj.read()
+        # размер файла
+        file_size_inbytes = filedata[4:8]
+        self.file_size = int.from_bytes(file_size_inbytes, byteorder= 'little')
 
-# число бит в сигнале
-file_size_inbytes = data[4:8]
-print(file_size_inbytes)
+        # колличество каналов
+        num_of_channel_in_inbytes = filedata[22:24]
+        self.num_of_channel = int.from_bytes(num_of_channel_in_inbytes, byteorder= 'little')
 
-# число байт в сигнале
-file_size = int.from_bytes(file_size_inbytes, byteorder= 'little')
-print(file_size)
+        # значение аудио файла в байтах
+        audio_data_size_in_inbytes = filedata[40:44]
+        self.audio_data_size = int.from_bytes(audio_data_size_in_inbytes, byteorder= 'little')
 
-# колличество каналов
-num_of_channel_in_inbytes = data[22:24]
-num_of_channel = int.from_bytes(num_of_channel_in_inbytes, byteorder= 'little')
-print(num_of_channel)
+        # частота дикретизации
+        sampl_rate_in_bytes = filedata[24:28]
+        self.sampl_rate = int.from_bytes(sampl_rate_in_bytes, byteorder='little')
 
-# значение аудио файла в байтах
-audio_data_size_in_inbytes = data[40:44]
-audio_data_size = int.from_bytes(audio_data_size_in_inbytes, byteorder= 'little')
-print(audio_data_size)
+        # амплитуды сигнала
+        music_amps = []
+        for i in range(0,self.audio_data_size, 2):
+            amp_in_bytes = filedata[44+i:44+i+2]
+            amp = int.from_bytes(amp_in_bytes, byteorder= 'little', signed=True)
+            music_amps.append(amp)
+        
+        # количество отсчётов сигнала
+        self.num_of_samples = len(music_amps)
 
+        # осциллограмма сигнала
+        self.osc_data = copy.copy(music_amps)
+        self.time_scale = np.arange(0,self.num_of_samples/self.sampl_rate, 1/self.sampl_rate)
 
-# частота дикретизации
-sampl_rate_in_bytes = data[24:28]
-sampl_rate = int.from_bytes(sampl_rate_in_bytes, byteorder='little')
+        # спектр мощности сигнала
+        self.spectre_data = abs(np.fft.fft(music_amps))**2
+        self.freqs_scale = np.fft.fftfreq(self.time_scale.size, 1/self.sampl_rate)
 
-# амплитуда сигнала в разные моменты времени
-music_amps = []
+my_audio = Audio_Item("seminar_3/1kHz_44100Hz_16bit_05sec.wav")
 
-for i in range(0,audio_data_size, 2):
-    amp_in_bytes = data[44+i:44+i+2]
-    amp = int.from_bytes(amp_in_bytes, byteorder= 'little', signed=True)
-    music_amps.append(amp)
+plt.plot(my_audio.time_scale,my_audio.osc_data)
+plt.show()
 
-# xdata = range(0, len(music_amps)/sampl_rate, len(music_amps))
-xdata = np.linspace(0, len(music_amps)/sampl_rate, len(music_amps))
-
-spectre = np.fft.fft(music_amps)
-abs_spectre = abs(spectre)
-
-# plt.plot(xdata, music_amps)
-# plt.show()
-
-plt.plot(xdata, abs_spectre)
+plt.plot(my_audio.freqs_scale[0:ceil(my_audio.num_of_samples/2)], my_audio.spectre_data[0:ceil(my_audio.num_of_samples/2)])
 plt.show()
 
 pass
