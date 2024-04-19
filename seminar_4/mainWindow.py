@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QSize
+from seminar_4.settingsWidget import SettingsWidget
 
 
 class MainWindow(QMainWindow):
@@ -9,7 +10,9 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Главное окно')
         self.setMinimumSize(QSize(1080,720)) # размер окна в пикселях
 
-        self.setCentralWidget()
+        self.settings_widget=SettingsWidget()
+
+        self.setCentralWidget(self.settings_widget)
 
 
 
