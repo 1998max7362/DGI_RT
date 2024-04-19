@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-fileobj =  open("task_1/1kHz_44100Hz_16bit_05sec.wav" , mode="rb")
+fileobj =  open("seminar_3/1kHz_44100Hz_16bit_05sec.wav" , mode="rb")
 
 data = fileobj.read()
 
