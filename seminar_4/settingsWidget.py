@@ -1,8 +1,10 @@
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import pyqtSignal
 
 
 class SettingsWidget(QWidget):
+    file_added = pyqtSignal(str)
     def __init__(self):
         super().__init__()
         layout = QVBoxLayout(self)
@@ -45,6 +47,7 @@ class SettingsWidget(QWidget):
         if fileName != '':
             self.file_name = fileName
             self.show_file_name_label.setText(fileName)
+            self.file_added.emit(fileName)
 
 
 if __name__ == '__main__':

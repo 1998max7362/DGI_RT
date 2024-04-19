@@ -14,6 +14,15 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.settings_widget)
 
+        self._init_connections()
+
+
+    def _init_connections(self):
+        self.settings_widget.file_added.connect(self.print_file_name)
+
+
+    def print_file_name(self,filename):
+        print("Выбранный файла:",filename)
 
 
 if __name__ == '__main__':
