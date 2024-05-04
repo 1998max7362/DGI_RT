@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QSize
 from seminar_4.settingsWidget import SettingsWidget
 
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
+    app = QApplication([])
     main = MainWindow()
     main.show()
 

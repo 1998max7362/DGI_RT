@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QPushButton, QLabel, QFileDialog
 from PyQt5.QtCore import pyqtSignal
 
 
@@ -52,7 +52,7 @@ class SettingsWidget(QWidget):
 
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
+    app = QApplication([])
     main = SettingsWidget()
     main.show()
 
