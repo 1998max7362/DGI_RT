@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
 from seminar_4_bmstu.AudioItem import Audio_Item
-from seminar_5.GraphWidget import GraphWidget
+from seminar_5.GraphWidgetV2 import GraphWidget
 
 
 class MyWidget(QWidget):
