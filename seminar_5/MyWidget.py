@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
 from seminar_4_bmstu.AudioItem import Audio_Item
+from seminar_5.GraphWidget import GraphWidget
 
 
 class MyWidget(QWidget):
@@ -16,21 +17,22 @@ class MyWidget(QWidget):
         self.setLayout(mainLayout)
 
         self.myLable=QLabel('Выбранный файл: ')
-        myLable2=QLabel('Какой-то текст 2')
+        self.graphWidget = GraphWidget()
 
 
         select_file_button = QPushButton('Выбрать файл')
-        spectre_button = QPushButton('Показать спектр')
         osc_button = QPushButton('Показать осциллограмму')
+        spectre_button = QPushButton('Показать спектр')
 
         verticalLayout.addWidget(self.myLable)
         verticalLayout.addWidget(select_file_button)
         verticalLayout.addWidget(spectre_button)
         verticalLayout.addWidget(osc_button)
 
-        mainLayout.addWidget(myLable2)
+        mainLayout.addWidget(self.graphWidget)
 
         select_file_button.clicked.connect(self.select_file)
+        osc_button.clicked.connect(self.show_osc)
 
         self.clicks_counter = 0
 
@@ -39,7 +41,11 @@ class MyWidget(QWidget):
         self.audio_item = Audio_Item(filename)
         self.myLable.setText(f'Выбранный файл: {filename}')
         print(self.audio_item)
-
+    
+    def show_osc(self):
+        xdata = self.audio_item.time_scale
+        ydata = self.audio_item.osc_data
+        self.graphWidget.setData(xdata, ydata)
 
 
 
