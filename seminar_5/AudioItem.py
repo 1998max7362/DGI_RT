@@ -5,6 +5,10 @@ from math import ceil
 
 class Audio_Item():
     def __init__(self,filename:str) -> None:
+
+        if filename.rsplit('.',1)[1]!='wav':
+            raise Exception
+
         fileobj =  open(filename , mode="rb")
         filedata = fileobj.read()
         fileobj.close()
@@ -20,6 +24,9 @@ class Audio_Item():
         # значение аудио файла в байтах
         audio_data_size_in_inbytes = filedata[40:44]
         self.audio_data_size = int.from_bytes(audio_data_size_in_inbytes, byteorder= 'little')
+
+        if self.audio_data_size>self.file_size:
+            raise Exception
 
         # частота дикретизации
         sampl_rate_in_bytes = filedata[24:28]
