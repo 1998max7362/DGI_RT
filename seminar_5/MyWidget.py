@@ -111,8 +111,8 @@ class MyWidget(QWidget):
         self.myTextEdit.insertPlainText(
             f'{getDateTime()} >> {text} \n')
 
-
-app = QApplication([])
-mainWidget = MyWidget()
-mainWidget.show()
-app.exec()
+if __name__=='__main__':
+    app = QApplication([])
+    mainWidget = MyWidget()
+    mainWidget.show()
+    app.exec()
