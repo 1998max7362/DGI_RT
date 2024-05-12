@@ -13,51 +13,65 @@ def getDateTime():
 
 class MyWidget(QWidget):
     work_requested = Signal(object)
+
     def __init__(self):
         super().__init__()
 
+        # Устанавливаем минимальные размеры окна
         self.setMinimumSize(600, 400)
 
+        # Создаем и устанавливаем горизонтальный макет на всё окно
         mainLayout = QHBoxLayout()
-
-        leftWidget = QWidget()
-        verticalLayout = QVBoxLayout()
-        leftWidget.setLayout(verticalLayout)
-        leftWidget.setMaximumWidth(400)
-
-        mainLayout.addWidget(leftWidget)
-
         self.setLayout(mainLayout)
 
-        self.myLable = QLabel('Лог:')
-        self.myTextEdit = QTextEdit()
+        # Создаем вертикальный макет под левую часть экрана
+        verticalLayout = QVBoxLayout()
+
+        # Создаем и отдельный виджет под левую часть экрана
+        leftWidget = QWidget()
+        leftWidget.setLayout(verticalLayout)
+        leftWidget.setMaximumWidth(400)
+        mainLayout.addWidget(leftWidget)
+
+        # Создаем виджеты
+        self.myLable = QLabel('Лог:')  # Лейбл
+        self.graphWidget = GraphWidget()  # Виджет графика
+        self.myTextEdit = QTextEdit()  # Виджет лога
+        # Устанавливаем режим "только чтение" на виджет лога
         self.myTextEdit.setReadOnly(True)
-        self.graphWidget = GraphWidget()
-
-        select_file_button = QPushButton('Выбрать файл')
+        select_file_button = QPushButton('Выбрать файл')  # Кнопка выбора файла
+        # Кнопка показа осциллограммы
         osc_button = QPushButton('Показать осциллограмму')
-        spectre_button = QPushButton('Показать спектр')
+        spectre_button = QPushButton(
+            'Показать спектр')  # Кнопка показа спектра
 
+        # Добавляем ранее созданные виджеты на макет левой части экрана
         verticalLayout.addWidget(self.myLable)
         verticalLayout.addWidget(self.myTextEdit)
         verticalLayout.addWidget(select_file_button)
         verticalLayout.addWidget(spectre_button)
         verticalLayout.addWidget(osc_button)
 
+        # Добавляем ранее созданные виджеты на общий макет
         mainLayout.addWidget(self.graphWidget)
 
+        # Указываем колбэк функции для событий кликов каждой кнопки
         select_file_button.clicked.connect(self.select_file)
         osc_button.clicked.connect(self.show_osc)
         spectre_button.clicked.connect(self.show_spectr)
 
-        self.audio_item = False
+        # Добавляем свойства для хранения данных из файла (изначально пустое)
+        self.audio_item = None
 
+        # Создаем отдельный поток и кладем туда воркер,
+        # в этом воркере будут выполняться функции,
+        # не блокирующие основной поток интерфейса
         self.worker_thread = QThread()
         self.worker = Worker()
         self.worker.moveToThread(self.worker_thread)
         self.work_requested.connect(self.worker.do_work)
         self.worker_thread.start()
-    
+
     def start_work(self):
         self.work_requested.emit(True)
 
@@ -67,15 +81,13 @@ class MyWidget(QWidget):
             self.addLog(f'Выбран файл: {filename}')
             self.worker.setWork(lambda: self.__loadFile(filename))
             self.start_work()
-    
+
     def __loadFile(self, filename):
         try:
-            self.audio_item =  Audio_Item(filename)
+            self.audio_item = Audio_Item(filename)
         except:
             self.audio_item = False
             self.addLog("Ошибка чтения файла")
-        
-
 
     def show_osc(self):
         self.worker.setWork(self.__buldOsc)
@@ -98,7 +110,7 @@ class MyWidget(QWidget):
             self.start_work()
         else:
             self.addLog('Не выбран файл')
-    
+
     def __buldSpectre(self):
         xdata = self.audio_item.freqs_scale[0:ceil(
             self.audio_item.num_of_samples/2)]
@@ -111,7 +123,8 @@ class MyWidget(QWidget):
         self.myTextEdit.insertPlainText(
             f'{getDateTime()} >> {text} \n')
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     app = QApplication([])
     mainWidget = MyWidget()
     mainWidget.show()
