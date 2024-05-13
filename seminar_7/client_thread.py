@@ -8,6 +8,8 @@ client.connect(('localhost', 12345))    # подключаемся к серве
 data = client.recv(1024)            # получаем данные с сервера
 print("Server sent: ", data.decode())    # выводим данные на консоль
 
+flag = True
+
 def showMessages():
   while True:
       data = client.recv(1024)
@@ -16,11 +18,16 @@ def showMessages():
         break
   
   client.close()
+  global flag
+  flag = False
   print('Disconnected')
 
 start_new_thread(showMessages, ())
 
 while True:
   message = input()
-  binaryMessage = message.encode()
-  client.send(binaryMessage)
+  if flag:
+    binaryMessage = message.encode()
+    client.send(binaryMessage)
+  else:
+    break

@@ -16,6 +16,8 @@ con, addr = server.accept()     # принимаем клиента
 print("connection: ", con)
 print("client address: ", addr)
 
+flag = True
+
 def showMessages():
   while True:
       data = con.recv(1024)
@@ -28,6 +30,8 @@ def showMessages():
 
   con.close()                     # закрываем подключение
   server.close()
+  global flag
+  flag = False
   print('Server is closed')
 
 message = "Hello Client!"       # сообщение для отправки клиенту
@@ -38,6 +42,9 @@ start_new_thread(showMessages, ())
 
 while True:
   message = input()
-  binaryMessage = message.encode()
-  con.send(binaryMessage)
+  if flag:
+    binaryMessage = message.encode()
+    con.send(binaryMessage)
+  else:
+    break
 

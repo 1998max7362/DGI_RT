@@ -26,11 +26,9 @@ class ChatWindow(QWidget):
         mainLayout.addWidget(startButton)
         mainLayout.addWidget(stopButton)
 
-        # self.taskInProgress = False
         self.taskExecuter = TaskExecuter()
     
     def startClicked(self):
-        # self.taskInProgress = True
         self.taskExecuter.setTask(lambda: self.__fakeTask())
         self.taskExecuter.runTask()
 
